@@ -4,21 +4,21 @@
 
 (defmacro split (val yes no)
   (let1 g (gensym)
-  `(let1 ,g ,val
-     (if ,g
-       (let ((head (car ,g))
-             (tail (cdr ,g)))
-         ,yes)
-         ,no))))
+	`(let1 ,g ,val
+	       (if ,g
+		   (let ((head (car ,g))
+			 (tail (cdr ,g)))
+		     ,yes)
+		   ,no))))
 
 (defun pairs (lst)
-    (labels ((f (lst acc)
-                (split lst
-                  (if tail
-                      (f (cdr tail) (cons (cons head (car tail)) acc))
-                      (reverse acc))
-                  (reverse acc))))
-      (f lst nil)))
+  (labels ((f (lst acc)
+	     (split lst
+		    (if tail
+			(f (cdr tail) (cons (cons head (car tail)) acc))
+			(reverse acc))
+		    (reverse acc))))
+    (f lst nil)))
 
 (defun print-tag (name alst closingp)
   (princ #\<)
@@ -39,9 +39,11 @@
           ,@body
           (print-tag ',name nil t)))
 
-(defmacro svg (&body body)
+(defmacro svg (width height &body body)
   `(tag svg (xmlns "http://www.w3.org/2000/svg" 
-             "xmlns:xlink" "http://www.w3.org/1999/xlink")
+		   "xmlns:xlink" "http://www.w3.org/1999/xlink"
+		   height ,height
+		   width ,width)
 	,@body))
 
 (defun brightness (col amt)
@@ -61,4 +63,4 @@
 			       (mapcan (lambda (tp)
 					 (list (car tp) (cdr tp)))
 				       points))
-		style (svg-style color))))
+		       style (svg-style color))))

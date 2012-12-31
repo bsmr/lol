@@ -1,3 +1,7 @@
+;;;
+;;; wumpus
+;;;
+
 (load "graph-util")
 
 (defparameter *congestion-city-nodes* nil)
@@ -17,7 +21,7 @@
 
 (defun make-edge-list ()
   (apply #'append (loop repeat *edge-num*
-                        collect (edge-pair (random-node) (random-node)))))
+		     collect (edge-pair (random-node) (random-node)))))
 
 (defun direct-edges (node edge-list)
   (remove-if-not (lambda (x)
@@ -75,13 +79,13 @@
                                                   edges-with-cops
                                                   :test #'equal)
                                     (list node2 'cops)
-                                  edge)))
+				    edge)))
                             node1-edges))))
           edge-alist))
 
 (defun make-city-edges ()
   (let* ((nodes (loop for i from 1 to *node-num*
-                      collect i))
+		   collect i))
          (edge-list (connect-all-islands nodes (make-edge-list)))
          (cops (remove-if-not (lambda (x)
                                 (zerop (random *cop-odds*)))
@@ -103,19 +107,19 @@
 (defun make-city-nodes (edge-alist)
   (let ((wumpus (random-node))
         (glow-worms (loop for i below *worm-num*
-                          collect (random-node))))
+		       collect (random-node))))
     (loop for n from 1 to *node-num*
-          collect (append (list n)
-                          (cond ((eql n wumpus) '(wumpus))
-                                ((within-two n wumpus edge-alist) '(blood!)))
-                          (cond ((member n glow-worms)
-                                 '(glow-worm))
-                                ((some (lambda (worm)
-                                         (within-one n worm edge-alist))
-                                       glow-worms)
-                                 '(lights!)))
-                          (when (some #'cdr (cdr (assoc n edge-alist)))
-                            '(sirens!))))))
+       collect (append (list n)
+		       (cond ((eql n wumpus) '(wumpus))
+			     ((within-two n wumpus edge-alist) '(blood!)))
+		       (cond ((member n glow-worms)
+			      '(glow-worm))
+			     ((some (lambda (worm)
+				      (within-one n worm edge-alist))
+				    glow-worms)
+			      '(lights!)))
+		       (when (some #'cdr (cdr (assoc n edge-alist)))
+			 '(sirens!))))))
 
 (defun new-game ()
   (setf *congestion-city-edges* (make-city-edges))
@@ -142,18 +146,18 @@
                       n))
                 (list node '?)))
           (remove-duplicates 
-              (append *visited-nodes*
-                      (mapcan (lambda (node)
-                                (neighbors node *congestion-city-edges*))
-                              *visited-nodes*)))))
+	   (append *visited-nodes*
+		   (mapcan (lambda (node)
+			     (neighbors node *congestion-city-edges*))
+			   *visited-nodes*)))))
 
 (defun known-city-edges ()
   (mapcar (lambda (node)
             (cons node (mapcar (lambda (x)
                                  (if (member (car x) *visited-nodes*)
                                      x
-                                   (list (car x))))
-                                   (cdr (assoc node *congestion-city-edges*)))))
+				     (list (car x))))
+			       (cdr (assoc node *congestion-city-edges*)))))
           *visited-nodes*))
 
 (defun draw-known-city ()
@@ -178,7 +182,7 @@
                      (cdr (assoc *player-pos* *congestion-city-edges*)))))
     (if edge
         (handle-new-place edge pos charging)
-      (princ "That location does not exist!"))))
+	(princ "That location does not exist!"))))
 
 (defun handle-new-place (edge pos charging)
   (let* ((node (assoc pos *congestion-city-nodes*))
@@ -197,3 +201,6 @@
                       (princ new-pos)
                       (handle-new-place nil new-pos nil))))))
 
+;;;
+;;; End Of File
+;;;

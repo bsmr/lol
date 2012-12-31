@@ -74,12 +74,14 @@
 (defun dot->png (fname thunk)
   (with-open-file (*standard-output* (concatenate 'string fname ".dot") :direction :output :if-exists :supersede)
     (funcall thunk))
-  (ext:shell (concatenate 'string "dot -Tpng -O " fname ".dot")))
+  (sb-ext:run-program "/usr/bin/dot"
+		      (list "-Tpng" "-O"
+		      (concatenate 'string fname ".dot"))))
 
-(defun dgraph->png (fname nodes edges)
-  (dot->png fname
-            (lambda ()
-              (dgraph->dot nodes edges))))
+;(defun dgraph->png (fname nodes edges)
+;  (dot->png fname
+;            (lambda ()
+;              (dgraph->dot nodes edges))))
 
 (defun ugraph->png (fname nodes edges)
   (dot->png fname
@@ -88,3 +90,6 @@
 
 ;(defun run ()
 ;  (ugraph->png "wizard" *nodes* *edges*))
+
+(defun run ()
+  (ugraph->png "wizard" *wizard-nodes* *wizard-edges*))
