@@ -1,0 +1,32 @@
+#!/bin/bash
+
+LH="http://landoflisp.com"
+
+for LF in				\
+	"guess.lisp"			\
+	"wizards_game.lisp"		\
+	"graph-util.lisp"		\
+	"wumpus.lisp"			\
+	"orc-battle.lisp"		\
+	"evolution.lisp"		\
+	"robots.lisp"			\
+	"webserver.lisp"		\
+	"dice_of_doom_v1.lisp"		\
+	"svg.lisp"			\
+	"wizard_special_actions.lisp"	\
+	"lazy.lisp"			\
+	"dice_of_doom_v2.lisp"		\
+	"dice_of_doom_v3.lisp"		\
+	"dice_of_doom_v4.lisp"		\
+	""
+do
+	if [ -z "${LF}" ] ; then continue ; fi
+	LU="${LH}/${LF}"
+	wget -nc "${LU}"
+done
+
+exit 0
+
+#
+# End Of File
+#
